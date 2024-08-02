@@ -136,7 +136,7 @@ const Reading = () => {
                     </div>
                 ))}
             </div>
-            <Link to={"/"} className="link"> ← Bosh menyuga qaytish </Link>
+            <Link to={"/Crud"} className="link"> ← Bosh menyuga qaytish </Link>
         </div>
     );
 }
