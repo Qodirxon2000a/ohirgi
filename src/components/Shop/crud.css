@@ -1,0 +1,170 @@
+/* Base styles */
+.container {
+  font-family: 'Arial', sans-serif;
+  margin: 20px;
+}
+
+.category-selector {
+  margin-bottom: 20px;
+}
+
+.category-selector h2 {
+  font-size: 1.5em;
+  color: #FF6347; /* Tomato color for a fast food vibe */
+}
+
+.category-selector select {
+  padding: 10px;
+  font-size: 1.2em;
+  border: 2px solid #FF6347; /* Tomato border color */
+  border-radius: 5px;
+  background-color: #FFF5F5; /* Light pink background */
+  color: #333; /* Dark text color */
+  cursor: pointer;
+  width: 100%;
+  max-width: 300px;
+}
+
+.category-selector select:focus {
+  outline: none;
+  border-color: #FF4500; /* Darker orange color on focus */
+}
+
+.popular-dishes {
+  margin-top: 20px;
+}
+
+.popular-dishes h2 {
+  font-size: 2em;
+  color: #FF6347; /* Tomato color */
+}
+
+.dishes__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.dish__item {
+  background-color: #FFF; /* White background */
+  border: 2px solid #FF6347; /* Tomato border color */
+  border-radius: 10px;
+  overflow: hidden;
+  width: calc(33% - 20px); /* Three items per row with some gap */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dish__image {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
+
+.dish__discount {
+  background-color: #FF6347; /* Tomato background color */
+  color: #FFF;
+  padding: 5px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.dish__name {
+  font-size: 1.2em;
+  margin: 10px 0;
+  text-align: center;
+}
+
+.dish__rating {
+  text-align: center;
+  margin: 10px 0;
+}
+
+.dish__rating span {
+  color: #FFD700; /* Gold stars */
+}
+
+.dish__price {
+  font-size: 1.5em;
+  color: #FF6347; /* Tomato color */
+  text-align: center;
+  margin: 10px 0;
+}
+
+.dish__add {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background-color: #FF6347; /* Tomato background color */
+  color: #FFF;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.2em;
+}
+
+.dish__add:hover {
+  background-color: #FF4500; /* Darker orange on hover */
+}
+
+/* Media Queries */
+
+/* Mobile Devices */
+@media (max-width: 767px) {
+  .category-selector select {
+    font-size: 1em;
+  }
+
+  .dish__item {
+    width: calc(50% - 20px); /* Two items per row on mobile */
+  }
+
+  .dish__image {
+    height: 120px;
+  }
+
+  .dish__name, .dish__price {
+    font-size: 1em;
+  }
+
+  .dish__add {
+    font-size: 1em;
+  }
+}
+
+/* Tablets */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .dish__item {
+    width: calc(33.333% - 20px); /* Three items per row on tablets */
+  }
+
+  .dish__image {
+    height: 130px;
+  }
+
+  .dish__name, .dish__price {
+    font-size: 1.1em;
+  }
+
+  .dish__add {
+    font-size: 1.1em;
+  }
+}
+
+/* Larger Screens */
+@media (min-width: 1025px) {
+  .dish__item {
+    width: calc(25% - 20px); /* Four items per row on larger screens */
+  }
+
+  .dish__image {
+    height: 150px;
+  }
+
+  .dish__name, .dish__price {
+    font-size: 1.2em;
+  }
+
+  .dish__add {
+    font-size: 1.2em;
+  }
+}

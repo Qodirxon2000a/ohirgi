@@ -1,0 +1,177 @@
+/* Global styles */
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.background-image {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  background: url('https://t4.ftcdn.net/jpg/02/55/77/03/360_F_255770374_rbmJO9gkkIhMBcyVPc3iW016BCLDvcWc.jpg') no-repeat center center fixed;
+  background-size: cover;
+}
+
+.login__container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh; /* Full height */
+  color: white; /* Text color white */
+  position: relative;
+  padding: 0 20px; /* Add padding for small screens */
+}
+
+h1 {
+  margin-bottom: 20px;
+  font-size: 2rem; /* Adjusted for readability */
+}
+
+form {
+  background: rgba(16, 15, 15, 0.5); /* Light background with opacity */
+  padding: 20px;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 400px; /* Maximum width for larger screens */
+}
+
+.input-group {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 1rem; /* Adjusted for readability */
+}
+
+input {
+  width: 100%;
+  padding: 10px; /* Increased padding for better touch interaction */
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 1rem; /* Adjusted font size */
+}
+
+button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem; /* Adjusted font size */
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.error-message {
+  color: red;
+  margin-top: 10px;
+  font-size: 0.875rem; /* Adjusted for readability */
+}
+
+/* Loading Screen */
+.loading-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+}
+
+.loading-spinner {
+  border: 16px solid #f3f3f3; /* Light grey */
+  border-top: 16px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 80px; /* Adjusted size for better fit */
+  height: 80px; /* Adjusted size for better fit */
+  animation: spin 2s linear infinite;
+}
+.error-message{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-message {
+  color: white;
+  font-size: 1.5rem; /* Adjusted size */
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+/* Media Queries for responsiveness */
+
+/* Tablets */
+@media (max-width: 768px) {
+  .login__container {
+    padding: 0 10px; /* Less padding for smaller screens */
+  }
+
+  form {
+    padding: 15px;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  input, button {
+    font-size: 0.875rem;
+  }
+
+  .loading-spinner {
+    width: 60px;
+    height: 60px;
+  }
+
+  .loading-message {
+    font-size: 1.25rem;
+  }
+}
+
+/* Mobile phones */
+@media (max-width: 480px) {
+  .login__container {
+    padding: 0 5px; /* Minimal padding for very small screens */
+  }
+
+  form {
+    padding: 10px;
+  }
+
+  h1 {
+    font-size: 1.25rem;
+  }
+
+  input, button {
+    font-size: 0.75rem;
+  }
+
+  .loading-spinner {
+    width: 50px;
+    height: 50px;
+  }
+
+  .loading-message {
+    font-size: 1rem;
+  }
+}
