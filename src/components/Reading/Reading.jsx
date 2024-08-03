@@ -235,7 +235,7 @@ const Reading = () => {
                 <label>Kun:
                     <input type="date" value={selectedDate} onChange={handleDateChange} />
                 </label>
-                <button onClick={viewDailyRevenue} className="calculate-button">Kunlik Tushumni Ko'rish</button>
+                <button onClick={viewDailyRevenue} className="calculate-button">Kunlik Tushumni Tekshirish</button>
             </div>
             {totalRevenue > 0 && (
                 <div className="total-revenue">
