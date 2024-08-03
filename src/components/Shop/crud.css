@@ -1,7 +1,30 @@
 /* Base styles */
+body {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  /* overflow: hidden; */
+}
+
+body:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('https://t3.ftcdn.net/jpg/05/89/70/46/360_F_589704609_b84XoVDaeopctL2Iz0lG4IQT86Dzm7xz.jpg') no-repeat center center fixed;
+  background-size: cover;
+  filter: blur(8px);
+  z-index: -1;
+}
+
 .container {
   font-family: 'Arial', sans-serif;
-  margin: 20px;
+  margin: 2px;
+  position: relative;
+  z-index: 0;
+  padding: 3% 0% 4% 5%;
 }
 
 .category-selector {
@@ -10,7 +33,7 @@
 
 .category-selector h2 {
   font-size: 1.5em;
-  color: #FF6347; /* Tomato color for a fast food vibe */
+  color: #ffffff; /* White color for a fast food vibe */
 }
 
 .category-selector select {
@@ -34,10 +57,8 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  /* align-items: center; */
   gap: 20px;
 }
-.
 
 .popular-dishes h2 {
   font-size: 2em;
@@ -48,7 +69,10 @@
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
-  
+}
+
+h2 {
+  color: #fff;
 }
 
 .dish__item {
@@ -58,16 +82,12 @@
   overflow: hidden;
   width: calc(33% - 20px); /* Three items per row with some gap */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  
 }
 
 .dish__image {
   width: 100%;
   height: 150px;
   object-fit: cover;
-  
-
-
 }
 
 .dish__discount {
