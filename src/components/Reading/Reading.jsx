@@ -48,8 +48,6 @@ const Reading = () => {
         setShowAllData(false);
         setShowMonthlyData(false);
         setShowMonthlyRevenue(false); // Hide monthly revenue when showing other data
-        setLatestDailyRevenue(0); // Reset latest daily revenue when showing other data
-        setTotalRevenue(0); // Reset total revenue when showing other data
     };
 
     const calculateAllData = () => {
@@ -77,8 +75,6 @@ const Reading = () => {
         setShowAllData(true);
         setShowMonthlyData(false);
         setShowMonthlyRevenue(false); // Hide monthly revenue when showing other data
-        setLatestDailyRevenue(0); // Reset latest daily revenue when showing other data
-        setTotalRevenue(0); // Reset total revenue when showing other data
     };
 
     const calculateMonthlyData = () => {
@@ -109,8 +105,14 @@ const Reading = () => {
         setShowAllData(false);
         setShowMonthlyData(true);
         setShowMonthlyRevenue(false); // Hide monthly revenue when showing other data
-        setLatestDailyRevenue(0); // Reset latest daily revenue when showing other data
-        setTotalRevenue(0); // Reset total revenue when showing other data
+
+        // Calculate latest daily revenue
+        const latestDate = Math.max(...data.map(item => new Date(item.dateAdded)));
+        const latestRevenue = data
+            .filter(item => new Date(item.dateAdded).toLocaleDateString() === new Date(latestDate).toLocaleDateString())
+            .reduce((acc, item) => acc + (item.price || 0), 0);
+
+        setLatestDailyRevenue(latestRevenue);
     };
 
     const calculateMonthlyRevenue = () => {
@@ -138,6 +140,7 @@ const Reading = () => {
             'Yanvar', 'Fevral', 'Mart', 'Aprel', 'May', 'Iyun',
             'Iyul', 'Avgust', 'Sentabr', 'Oktabr', 'Noyabr', 'Dekabr'
         ];
+        
 
         const yearGroups = data.reduce((acc, item) => {
             const year = new Date(item.dateAdded).getFullYear();
@@ -163,8 +166,6 @@ const Reading = () => {
         setShowAllData(false);
         setShowMonthlyData(false);
         setShowMonthlyRevenue(true); // Show monthly revenue
-        setLatestDailyRevenue(0); // Reset latest daily revenue when showing other data
-        setTotalRevenue(0); // Reset total revenue when showing other data
     };
 
     const handleDelete = (id) => {
@@ -180,18 +181,6 @@ const Reading = () => {
     const calculateTotalRevenue = () => {
         const total = data.reduce((acc, item) => acc + (item.price || 0), 0);
         setTotalRevenue(total);
-
-        // Calculate latest daily revenue
-        const latestDate = Math.max(...data.map(item => new Date(item.dateAdded)));
-        const latestRevenue = data
-            .filter(item => new Date(item.dateAdded).toLocaleDateString() === new Date(latestDate).toLocaleDateString())
-            .reduce((acc, item) => acc + (item.price || 0), 0);
-
-        setLatestDailyRevenue(latestRevenue);
-        setShowCalculatedData(false);
-        setShowAllData(false);
-        setShowMonthlyData(false);
-        setShowMonthlyRevenue(false); // Hide monthly revenue when showing other data
     };
 
     // const exportToExcel = () => {
@@ -211,6 +200,10 @@ const Reading = () => {
 
     return (
         <div className="reading__container">
+             <Link to={"/Crud"} className="link"> ← Bosh menyuga qaytish </Link>
+             {notification && <Notification message={notification} onClose={() => setNotification(null)} />}
+                <br />
+                <br />
             <h1>Sotilgan Maxsulotlar</h1>
             <button onClick={calculateData} className="calculate-button">Mahsulot bo'yicha</button>
             <button onClick={calculateAllData} className="calculate-button">Hammasi</button>
@@ -264,8 +257,7 @@ const Reading = () => {
                     </div>
                 ))}
             </div>
-            <Link to={"/Crud"} className="link"> ← Bosh menyuga qaytish </Link>
-            {notification && <Notification message={notification} onClose={() => setNotification(null)} />}
+           
         </div>
     );
 }
