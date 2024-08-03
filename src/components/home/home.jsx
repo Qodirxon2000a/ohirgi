@@ -44,7 +44,7 @@ const Home = () => {
       {loading ? (
         <div className="loading-screen">
           <div className="loading-spinner"></div>
-          <div className="loading-message">YUKLANMOQDA...</div>
+          <div className="loading-message"></div>
         </div>
       ) : (
         attempts < 3 ? (
@@ -52,7 +52,7 @@ const Home = () => {
             <h1>Login</h1>
             <form onSubmit={handleLogin}>
               <div className="input-group">
-                <label htmlFor="username">Username:</label>
+                <label htmlFor="username">Login:</label>
                 <input
                   type="text"
                   id="username"
@@ -62,7 +62,7 @@ const Home = () => {
                 />
               </div>
               <div className="input-group">
-                <label htmlFor="password">Password:</label>
+                <label htmlFor="password">Parol:</label>
                 <input
                   type="password"
                   id="password"
