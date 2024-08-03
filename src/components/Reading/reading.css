@@ -39,7 +39,13 @@
 .product__info h2 {
     font-size: 1.6rem;
     color: #333;
+    
     margin: 0 0 10px 0;
+}
+.total-revenue h2{
+    color:  #333;
+    margin-top: 5px;
+    margin-left: 3px;
 }
 
 .product__info p {
@@ -135,6 +141,7 @@
 @media (max-width: 600px) {
     .product__info {
         flex: 1 1 100%;
+        
     }
 
     .product__info h2 {
