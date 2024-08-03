@@ -31,8 +31,13 @@
 }
 
 .popular-dishes {
-  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* align-items: center; */
+  gap: 20px;
 }
+.
 
 .popular-dishes h2 {
   font-size: 2em;
@@ -43,6 +48,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
+  
 }
 
 .dish__item {
