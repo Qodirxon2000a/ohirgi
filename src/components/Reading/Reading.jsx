@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import "../Reading/reading.css";
 import Notification from './notif';
-// import * as XLSX from 'xlsx'; // Commented out
 
 const Reading = () => {
     const [data, setData] = useState([]);
@@ -11,10 +10,12 @@ const Reading = () => {
     const [showCalculatedData, setShowCalculatedData] = useState(false);
     const [showAllData, setShowAllData] = useState(false);
     const [showMonthlyData, setShowMonthlyData] = useState(false);
-    const [showMonthlyRevenue, setShowMonthlyRevenue] = useState(false); // New state for monthly revenue
+    const [showDailyRevenue, setShowDailyRevenue] = useState(false);
+    const [showMonthlyRevenue, setShowMonthlyRevenue] = useState(false);
     const [notification, setNotification] = useState(null);
-    const [totalRevenue, setTotalRevenue] = useState(0); // State for total revenue
-    const [latestDailyRevenue, setLatestDailyRevenue] = useState(0); // State for the latest daily revenue
+    const [totalRevenue, setTotalRevenue] = useState(0);
+    const [latestDailyRevenue, setLatestDailyRevenue] = useState(0);
+    const [selectedDate, setSelectedDate] = useState('');
 
     useEffect(() => {
         axios.get('https://61fcfec8f62e220017ce4280.mockapi.io/kiyim-kechak/qishkiKiyimlar')
@@ -47,7 +48,8 @@ const Reading = () => {
         setShowCalculatedData(true);
         setShowAllData(false);
         setShowMonthlyData(false);
-        setShowMonthlyRevenue(false); // Hide monthly revenue when showing other data
+        setShowDailyRevenue(false);
+        setShowMonthlyRevenue(false);
     };
 
     const calculateAllData = () => {
@@ -74,7 +76,8 @@ const Reading = () => {
         setShowCalculatedData(false);
         setShowAllData(true);
         setShowMonthlyData(false);
-        setShowMonthlyRevenue(false); // Hide monthly revenue when showing other data
+        setShowDailyRevenue(false);
+        setShowMonthlyRevenue(false);
     };
 
     const calculateMonthlyData = () => {
@@ -104,9 +107,9 @@ const Reading = () => {
         setShowCalculatedData(false);
         setShowAllData(false);
         setShowMonthlyData(true);
-        setShowMonthlyRevenue(false); // Hide monthly revenue when showing other data
+        setShowDailyRevenue(false);
+        setShowMonthlyRevenue(false);
 
-        // Calculate latest daily revenue
         const latestDate = Math.max(...data.map(item => new Date(item.dateAdded)));
         const latestRevenue = data
             .filter(item => new Date(item.dateAdded).toLocaleDateString() === new Date(latestDate).toLocaleDateString())
@@ -135,12 +138,10 @@ const Reading = () => {
             return acc;
         }, {});
 
-        // Fill in months with zero revenue
         const allMonths = [
             'Yanvar', 'Fevral', 'Mart', 'Aprel', 'May', 'Iyun',
             'Iyul', 'Avgust', 'Sentabr', 'Oktabr', 'Noyabr', 'Dekabr'
         ];
-        
 
         const yearGroups = data.reduce((acc, item) => {
             const year = new Date(item.dateAdded).getFullYear();
@@ -165,7 +166,8 @@ const Reading = () => {
         setShowCalculatedData(false);
         setShowAllData(false);
         setShowMonthlyData(false);
-        setShowMonthlyRevenue(true); // Show monthly revenue
+        setShowDailyRevenue(false);
+        setShowMonthlyRevenue(true);
     };
 
     const handleDelete = (id) => {
@@ -183,37 +185,61 @@ const Reading = () => {
         setTotalRevenue(total);
     };
 
-    // const exportToExcel = () => {
-    //     const formattedData = calculatedData.map(item => ({
-    //         'Product Name': item.productName || 'N/A',
-    //         'Date': item.date || `${item.month} ${item.year}`,
-    //         'Category': item.category || 'N/A',
-    //         'Total Sales': item.totalSales || 0,
-    //         'Total Price': item.totalPrice.toFixed(2) || 0,
-    //     }));
+    const handleDateChange = (event) => {
+        setSelectedDate(event.target.value);
+    };
 
-    //     const ws = XLSX.utils.json_to_sheet(formattedData);
-    //     const wb = XLSX.utils.book_new();
-    //     XLSX.utils.book_append_sheet(wb, ws, 'Report Data');
-    //     XLSX.writeFile(wb, 'ReportData.xlsx');
-    // };
+    const viewDailyRevenue = () => {
+        const dailyData = data.filter(item => {
+            const date = new Date(item.dateAdded).toLocaleDateString();
+            return date === new Date(selectedDate).toLocaleDateString();
+        });
+
+        const result = dailyData.reduce((acc, item) => {
+            const key = `${item.name}-${item.price}`;
+            if (!acc[key]) {
+                acc[key] = {
+                    productName: item.name,
+                    price: item.price || 0,
+                    quantity: 0,
+                };
+            }
+
+            acc[key].quantity += 1;
+
+            return acc;
+        }, {});
+
+        setCalculatedData(Object.values(result));
+        setShowDailyRevenue(true);
+        setShowCalculatedData(false);
+        setShowAllData(false);
+        setShowMonthlyData(false);
+        setShowMonthlyRevenue(false);
+    };
 
     return (
         <div className="reading__container">
-             <Link to={"/Crud"} className="link"> ← Bosh menyuga qaytish </Link>
-             {notification && <Notification message={notification} onClose={() => setNotification(null)} />}
-                <br />
-                <br />
+            <Link to={"/Crud"} className="link"> ← Bosh menyuga qaytish </Link>
+            {notification && <Notification message={notification} onClose={() => setNotification(null)} />}
+            <br />
+            <br />
             <h1>Sotilgan Maxsulotlar</h1>
             <button onClick={calculateData} className="calculate-button">Mahsulot bo'yicha</button>
             <button onClick={calculateAllData} className="calculate-button">Hammasi</button>
             <button onClick={calculateMonthlyData} className="calculate-button">Oylik Hisobot</button>
-            <button onClick={calculateMonthlyRevenue} className="calculate-button">Oylik Tushum</button> {/* New button for monthly revenue */}
-            <button onClick={calculateTotalRevenue} className="calculate-button">Kunlik Tushum</button> {/* New button for total revenue */}
-            {/* <button onClick={exportToExcel} className="export-button">Excelga Eksport qilish</button> Always visible export button */}
-            {totalRevenue > 0 && ( // Display total revenue if greater than 0
+            <button onClick={calculateMonthlyRevenue} className="calculate-button">Oylik Tushum</button>
+            <button onClick={calculateTotalRevenue} className="calculate-button">Kunlik Tushum</button>
+            <div>
+                <br /><br />
+                <label>Kun:
+                    <input type="date" value={selectedDate} onChange={handleDateChange} />
+                </label>
+                <button onClick={viewDailyRevenue} className="calculate-button">Kunlik Tushumni Ko'rish</button>
+            </div>
+            {totalRevenue > 0 && (
                 <div className="total-revenue">
-                    <h2>Umumiy Tushum: {totalRevenue.toFixed(2)} Som</h2>
+                    <h2>Umumiy Tushum: {totalRevenue ? totalRevenue.toFixed(2) : '0.00'} Som</h2>
                 </div>
             )}
             {(showCalculatedData || showAllData || showMonthlyData) && (
@@ -223,24 +249,36 @@ const Reading = () => {
                         <div key={index} className="calculated-item">
                             <h3>{showMonthlyData ? `Oy: ${item.month} ${item.year}` : showAllData ? `Kuni: ${item.date}` : `Mahsulot: ${item.productName}`}</h3>
                             <p>Kategoriya: {item.category || 'N/A'}</p>
-                            <p>Hammasi: {item.totalSales}</p>
-                            <p>Umumiy Pul: {item.totalPrice.toFixed(2)} Som</p>
+                            <p>Hammasi: {item.totalSales || 0}</p>
+                            <p>Umumiy Pul: {item.totalPrice ? item.totalPrice.toFixed(2) : '0.00'} Som</p>
                         </div>
                     ))}
                 </div>
             )}
-            {showMonthlyData && latestDailyRevenue > 0 && ( // Display latest daily revenue if monthly data is shown and revenue is greater than 0
-                <div className="latest-daily-revenue">
-                    <h2>Eng Ohirgi Kunlik Tushum: {latestDailyRevenue.toFixed(2)} Som</h2>
+            {showDailyRevenue && (
+                <div className="daily-revenue">
+                    <h2>Kunlik Tushum</h2>
+                    {calculatedData.length > 0 ? (
+                        calculatedData.map((item, index) => (
+                            <div key={index} className="daily-revenue-item">
+                                <h3>Mahsulot: {item.productName}</h3>
+                                <p>Narxi: {item.price ? item.price.toFixed(2) : '0.00'} Som</p>
+                                <p>Soni: {item.quantity || 0}</p>
+                                <p>Umumiy Tushum: {(item.price && item.quantity) ? (item.price * item.quantity).toFixed(2) : '0.00'} Som</p>
+                            </div>
+                        ))
+                    ) : (
+                        <p>Ma'lumot mavjud emas</p>
+                    )}
                 </div>
             )}
-            {showMonthlyRevenue && ( // Display monthly revenue
+            {showMonthlyRevenue && (
                 <div className="monthly-revenue">
                     <h2>Oylik Tushum</h2>
                     {calculatedData.map((item, index) => (
                         <div key={index} className="monthly-revenue-item">
                             <h3>Oy: {item.month} {item.year}</h3>
-                            <p>Umumiy Tushum: {item.totalRevenue > 0 ? `${item.totalRevenue.toFixed(2)} Som` : 'Tushum yo\'q'}</p>
+                            <p>Umumiy Tushum: {item.totalRevenue ? item.totalRevenue.toFixed(2) : '0.00'} Som</p>
                         </div>
                     ))}
                 </div>
@@ -257,9 +295,8 @@ const Reading = () => {
                     </div>
                 ))}
             </div>
-           
         </div>
     );
-}
+};
 
 export default Reading;
