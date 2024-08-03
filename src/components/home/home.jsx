@@ -31,7 +31,7 @@ const Home = () => {
       setError('');
       setLoading(true);
       setTimeout(() => {
-        navigate('/Crud');
+        navigate('/read');
       }, 1000);
     } else {
       setError('Hato Parol');

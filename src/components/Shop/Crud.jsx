@@ -60,7 +60,7 @@ const Crud = () => {
   const handleAdminClick = () => {
     setLoading(true);
     setTimeout(() => { // Simulate a shorter delay of 0.5 seconds
-      navigate('/read');
+      navigate('/');
       setLoading(false);
     }, 200); // Adjusted delay to 0.5 seconds
   };
