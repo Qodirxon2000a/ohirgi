@@ -115,6 +115,9 @@
     background-color: #1976d2;
     color: #ffffff;
 }
+.export-button{
+    margin-left: 10px;
+}
 
 /* Media Queries */
 @media (max-width: 1200px) {
@@ -153,6 +156,9 @@
 }
 
 @media (max-width: 400px) {
+    .export-button{
+        margin-top: 10px;
+    }
     .product__info {
         padding: 15px;
         max-width: 100%;

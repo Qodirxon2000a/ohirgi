@@ -2,7 +2,8 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import "../Reading/reading.css";
-import Notification from './notif'; // Import the Notification component
+import Notification from './notif';
+import * as XLSX from 'xlsx';
 
 const Reading = () => {
     const [data, setData] = useState([]);
@@ -10,10 +11,9 @@ const Reading = () => {
     const [showCalculatedData, setShowCalculatedData] = useState(false);
     const [showAllData, setShowAllData] = useState(false);
     const [showMonthlyData, setShowMonthlyData] = useState(false);
-    const [notification, setNotification] = useState(null); // State for notification
+    const [notification, setNotification] = useState(null);
 
     useEffect(() => {
-        // Fetch data from your new API endpoint
         axios.get('https://61fcfec8f62e220017ce4280.mockapi.io/kiyim-kechak/qishkiKiyimlar')
             .then(res => setData(res.data))
             .catch(err => console.log(err));
@@ -22,12 +22,13 @@ const Reading = () => {
     const calculateData = () => {
         const result = data.reduce((acc, item) => {
             const date = new Date(item.dateAdded).toLocaleDateString();
-            const key = `${item.name}-${date}`;
+            const key = `${item.name}-${date}-${item.category}`;
 
             if (!acc[key]) {
                 acc[key] = {
                     productName: item.name,
                     date,
+                    category: item.category,
                     totalPrice: 0,
                     totalSales: 0,
                 };
@@ -48,11 +49,12 @@ const Reading = () => {
     const calculateAllData = () => {
         const result = data.reduce((acc, item) => {
             const date = new Date(item.dateAdded).toLocaleDateString();
-            const key = `All-${date}`;
+            const key = `All-${date}-${item.category}`;
 
             if (!acc[key]) {
                 acc[key] = {
                     date,
+                    category: item.category,
                     totalPrice: 0,
                     totalSales: 0,
                 };
@@ -75,12 +77,13 @@ const Reading = () => {
             const date = new Date(item.dateAdded);
             const month = date.toLocaleString('default', { month: 'long' });
             const year = date.getFullYear();
-            const key = `${month}-${year}`;
+            const key = `${month}-${year}-${item.category}`;
 
             if (!acc[key]) {
                 acc[key] = {
                     month,
                     year,
+                    category: item.category,
                     totalPrice: 0,
                     totalSales: 0,
                 };
@@ -99,15 +102,28 @@ const Reading = () => {
     };
 
     const handleDelete = (id) => {
-        // Make API call to delete the item
         axios.delete(`https://61fcfec8f62e220017ce4280.mockapi.io/kiyim-kechak/qishkiKiyimlar/${id}`)
             .then(() => {
-                // Remove the item from the state
                 setData(data.filter(item => item.id !== id));
-                setNotification("Maxsulot o'chirildi!"); // Show notification
-                setTimeout(() => setNotification(null), 3000); // Hide notification after 3 seconds
+                setNotification("Maxsulot o'chirildi!");
+                setTimeout(() => setNotification(null), 3000);
             })
             .catch(err => console.log(err));
+    };
+
+    const exportToExcel = () => {
+        const formattedData = calculatedData.map(item => ({
+            'Product Name': item.productName || 'N/A',
+            'Date': item.date || `${item.month} ${item.year}`,
+            'Category': item.category || 'N/A',
+            'Total Sales': item.totalSales || 0,
+            'Total Price': item.totalPrice.toFixed(2) || 0,
+        }));
+
+        const ws = XLSX.utils.json_to_sheet(formattedData);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Report Data');
+        XLSX.writeFile(wb, 'ReportData.xlsx');
     };
 
     return (
@@ -116,12 +132,16 @@ const Reading = () => {
             <button onClick={calculateData} className="calculate-button">Mahsulot bo'yicha</button>
             <button onClick={calculateAllData} className="calculate-button">Hammasi</button>
             <button onClick={calculateMonthlyData} className="calculate-button">Oylik Hisobot</button>
+            {showMonthlyData && (
+                <button onClick={exportToExcel} className="export-button">Excelga Eksport qilish</button>
+            )}
             {(showCalculatedData || showAllData || showMonthlyData) && (
                 <div className="calculated-data">
                     <h2>{showAllData ? "Hamma Sotilgan Maxsulotlar" : showMonthlyData ? "Oylik Hisobot" : "Mahsulotlar Bo'yicha Ma'lumot"}</h2>
                     {calculatedData.map((item, index) => (
                         <div key={index} className="calculated-item">
                             <h3>{showMonthlyData ? `Oy: ${item.month} ${item.year}` : showAllData ? `Kuni: ${item.date}` : `Mahsulot: ${item.productName}`}</h3>
+                            <p>Kategoriya: {item.category || 'N/A'}</p>
                             <p>Hammasi: {item.totalSales}</p>
                             <p>Umumiy Pul: {item.totalPrice.toFixed(2)} Som</p>
                         </div>
@@ -141,7 +161,7 @@ const Reading = () => {
                 ))}
             </div>
             <Link to={"/Crud"} className="link"> ← Bosh menyuga qaytish </Link>
-            {notification && <Notification message={notification} onClose={() => setNotification(null)} />} {/* Show notification */}
+            {notification && <Notification message={notification} onClose={() => setNotification(null)} />}
         </div>
     );
 }

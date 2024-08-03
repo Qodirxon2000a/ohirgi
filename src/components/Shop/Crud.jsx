@@ -95,7 +95,7 @@ const Crud = () => {
                 ))}
               </div>
               <div className="dish__price">{product.price} So'm</div>
-              <button className="dish__add" onClick={() => handleAddProduct(product)}>Buyurtma berish</button>
+              <button className="dish__add" onClick={() => handleAddProduct(product)}>Sotish </button>
               {/* <button className="dish__delete" onClick={() => handleDelete(product.id)}>Delete</button> */}
             </div>
           ))}

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import './notif.css'; // Import CSS for styling
+import './notif2.css'; // Import CSS for styling
 
 const Notification = ({ message, onClose }) => {
     const [fade, setFade] = useState(false);
