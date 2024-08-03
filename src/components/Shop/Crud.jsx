@@ -70,7 +70,7 @@ const Crud = () => {
         <div className="dishes__list">
           {filteredProducts.map((product, index) => (
             <div className="dish__item" key={index}>
-              <div className="dish__discount">Bizda bor</div>
+              <div className="dish__discount">LAVASH-XIT</div>
               <img src={product.avatar} alt={product.name} className="dish__image" />
               <h3 className="dish__name">{product.name}</h3>
               <div className="dish__rating">
