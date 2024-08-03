@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import "../Reading/reading.css";
 import Notification from './notif';
-import * as XLSX from 'xlsx';
+// import * as XLSX from 'xlsx'; // Commented out
 
 const Reading = () => {
     const [data, setData] = useState([]);
@@ -11,8 +11,10 @@ const Reading = () => {
     const [showCalculatedData, setShowCalculatedData] = useState(false);
     const [showAllData, setShowAllData] = useState(false);
     const [showMonthlyData, setShowMonthlyData] = useState(false);
+    const [showMonthlyRevenue, setShowMonthlyRevenue] = useState(false); // New state for monthly revenue
     const [notification, setNotification] = useState(null);
     const [totalRevenue, setTotalRevenue] = useState(0); // State for total revenue
+    const [latestDailyRevenue, setLatestDailyRevenue] = useState(0); // State for the latest daily revenue
 
     useEffect(() => {
         axios.get('https://61fcfec8f62e220017ce4280.mockapi.io/kiyim-kechak/qishkiKiyimlar')
@@ -45,6 +47,9 @@ const Reading = () => {
         setShowCalculatedData(true);
         setShowAllData(false);
         setShowMonthlyData(false);
+        setShowMonthlyRevenue(false); // Hide monthly revenue when showing other data
+        setLatestDailyRevenue(0); // Reset latest daily revenue when showing other data
+        setTotalRevenue(0); // Reset total revenue when showing other data
     };
 
     const calculateAllData = () => {
@@ -71,6 +76,9 @@ const Reading = () => {
         setShowCalculatedData(false);
         setShowAllData(true);
         setShowMonthlyData(false);
+        setShowMonthlyRevenue(false); // Hide monthly revenue when showing other data
+        setLatestDailyRevenue(0); // Reset latest daily revenue when showing other data
+        setTotalRevenue(0); // Reset total revenue when showing other data
     };
 
     const calculateMonthlyData = () => {
@@ -100,6 +108,63 @@ const Reading = () => {
         setShowCalculatedData(false);
         setShowAllData(false);
         setShowMonthlyData(true);
+        setShowMonthlyRevenue(false); // Hide monthly revenue when showing other data
+        setLatestDailyRevenue(0); // Reset latest daily revenue when showing other data
+        setTotalRevenue(0); // Reset total revenue when showing other data
+    };
+
+    const calculateMonthlyRevenue = () => {
+        const result = data.reduce((acc, item) => {
+            const date = new Date(item.dateAdded);
+            const month = date.toLocaleString('default', { month: 'long' });
+            const year = date.getFullYear();
+            const key = `${month}-${year}`;
+
+            if (!acc[key]) {
+                acc[key] = {
+                    month,
+                    year,
+                    totalRevenue: 0,
+                };
+            }
+
+            acc[key].totalRevenue += item.price || 0;
+
+            return acc;
+        }, {});
+
+        // Fill in months with zero revenue
+        const allMonths = [
+            'Yanvar', 'Fevral', 'Mart', 'Aprel', 'May', 'Iyun',
+            'Iyul', 'Avgust', 'Sentabr', 'Oktabr', 'Noyabr', 'Dekabr'
+        ];
+
+        const yearGroups = data.reduce((acc, item) => {
+            const year = new Date(item.dateAdded).getFullYear();
+            if (!acc.includes(year)) acc.push(year);
+            return acc;
+        }, []);
+
+        yearGroups.forEach(year => {
+            allMonths.forEach(month => {
+                const key = `${month}-${year}`;
+                if (!result[key]) {
+                    result[key] = {
+                        month,
+                        year,
+                        totalRevenue: 0,
+                    };
+                }
+            });
+        });
+
+        setCalculatedData(Object.values(result));
+        setShowCalculatedData(false);
+        setShowAllData(false);
+        setShowMonthlyData(false);
+        setShowMonthlyRevenue(true); // Show monthly revenue
+        setLatestDailyRevenue(0); // Reset latest daily revenue when showing other data
+        setTotalRevenue(0); // Reset total revenue when showing other data
     };
 
     const handleDelete = (id) => {
@@ -115,22 +180,34 @@ const Reading = () => {
     const calculateTotalRevenue = () => {
         const total = data.reduce((acc, item) => acc + (item.price || 0), 0);
         setTotalRevenue(total);
+
+        // Calculate latest daily revenue
+        const latestDate = Math.max(...data.map(item => new Date(item.dateAdded)));
+        const latestRevenue = data
+            .filter(item => new Date(item.dateAdded).toLocaleDateString() === new Date(latestDate).toLocaleDateString())
+            .reduce((acc, item) => acc + (item.price || 0), 0);
+
+        setLatestDailyRevenue(latestRevenue);
+        setShowCalculatedData(false);
+        setShowAllData(false);
+        setShowMonthlyData(false);
+        setShowMonthlyRevenue(false); // Hide monthly revenue when showing other data
     };
 
-    const exportToExcel = () => {
-        const formattedData = calculatedData.map(item => ({
-            'Product Name': item.productName || 'N/A',
-            'Date': item.date || `${item.month} ${item.year}`,
-            'Category': item.category || 'N/A',
-            'Total Sales': item.totalSales || 0,
-            'Total Price': item.totalPrice.toFixed(2) || 0,
-        }));
+    // const exportToExcel = () => {
+    //     const formattedData = calculatedData.map(item => ({
+    //         'Product Name': item.productName || 'N/A',
+    //         'Date': item.date || `${item.month} ${item.year}`,
+    //         'Category': item.category || 'N/A',
+    //         'Total Sales': item.totalSales || 0,
+    //         'Total Price': item.totalPrice.toFixed(2) || 0,
+    //     }));
 
-        const ws = XLSX.utils.json_to_sheet(formattedData);
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, 'Report Data');
-        XLSX.writeFile(wb, 'ReportData.xlsx');
-    };
+    //     const ws = XLSX.utils.json_to_sheet(formattedData);
+    //     const wb = XLSX.utils.book_new();
+    //     XLSX.utils.book_append_sheet(wb, ws, 'Report Data');
+    //     XLSX.writeFile(wb, 'ReportData.xlsx');
+    // };
 
     return (
         <div className="reading__container">
@@ -138,7 +215,8 @@ const Reading = () => {
             <button onClick={calculateData} className="calculate-button">Mahsulot bo'yicha</button>
             <button onClick={calculateAllData} className="calculate-button">Hammasi</button>
             <button onClick={calculateMonthlyData} className="calculate-button">Oylik Hisobot</button>
-            <button onClick={calculateTotalRevenue} className="calculate-button">Umumiy Tushum</button> {/* New button for total revenue */}
+            <button onClick={calculateMonthlyRevenue} className="calculate-button">Oylik Tushum</button> {/* New button for monthly revenue */}
+            <button onClick={calculateTotalRevenue} className="calculate-button">Kunlik Tushum</button> {/* New button for total revenue */}
             {/* <button onClick={exportToExcel} className="export-button">Excelga Eksport qilish</button> Always visible export button */}
             {totalRevenue > 0 && ( // Display total revenue if greater than 0
                 <div className="total-revenue">
@@ -154,6 +232,22 @@ const Reading = () => {
                             <p>Kategoriya: {item.category || 'N/A'}</p>
                             <p>Hammasi: {item.totalSales}</p>
                             <p>Umumiy Pul: {item.totalPrice.toFixed(2)} Som</p>
+                        </div>
+                    ))}
+                </div>
+            )}
+            {showMonthlyData && latestDailyRevenue > 0 && ( // Display latest daily revenue if monthly data is shown and revenue is greater than 0
+                <div className="latest-daily-revenue">
+                    <h2>Eng Ohirgi Kunlik Tushum: {latestDailyRevenue.toFixed(2)} Som</h2>
+                </div>
+            )}
+            {showMonthlyRevenue && ( // Display monthly revenue
+                <div className="monthly-revenue">
+                    <h2>Oylik Tushum</h2>
+                    {calculatedData.map((item, index) => (
+                        <div key={index} className="monthly-revenue-item">
+                            <h3>Oy: {item.month} {item.year}</h3>
+                            <p>Umumiy Tushum: {item.totalRevenue > 0 ? `${item.totalRevenue.toFixed(2)} Som` : 'Tushum yo\'q'}</p>
                         </div>
                     ))}
                 </div>
