@@ -3,10 +3,14 @@ import "./crud.css";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { productsByCategory } from './data';
+import LoadingPage from './loading'; // Import the LoadingPage component
+import Notification from './notification'; // Import the Notification component
 
 const Crud = () => {
   const [data, setData] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('Xod dog');
+  const [loading, setLoading] = useState(false); // State for loading
+  const [notification, setNotification] = useState(null); // State for notification
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -40,7 +44,8 @@ const Crud = () => {
       .post("https://61fcfec8f62e220017ce4280.mockapi.io/kiyim-kechak/qishkiKiyimlar", productWithDate)
       .then((res) => {
         setData([...data, res.data]);
-        alert("Maxsulot saqlandi Ishni boshlang!");
+        setNotification("Maxsulot saqlandi Ishni boshlang!"); // Show notification
+        setTimeout(() => setNotification(null), 3000); // Hide notification after 3 seconds
       })
       .catch((err) => {
         console.error("Eror:", err);
@@ -52,11 +57,22 @@ const Crud = () => {
 
   const filteredProducts = productsByCategory[selectedCategory] || [];
 
+  const handleAdminClick = () => {
+    setLoading(true);
+    setTimeout(() => { // Simulate a shorter delay of 0.5 seconds
+      navigate('/read');
+      setLoading(false);
+    }, 200); // Adjusted delay to 0.5 seconds
+  };
+
   return (
     <div className="container">
+      {loading && <LoadingPage />} {/* Show loading page when in loading state */}
+      {notification && <Notification message={notification} onClose={() => setNotification(null)} />} {/* Show notification */}
+
       <div className="category-selector">
         <div className="btmasasa"></div>
-        <button className="admin-button" onClick={() => navigate('/read')}>Admin</button>
+        <button className="admin-button" onClick={handleAdminClick}>Admin</button>
         <h2>Bo'limni tanlang</h2>
         <select onChange={(e) => setSelectedCategory(e.target.value)} value={selectedCategory}>
           {categories.map((category, index) => (
