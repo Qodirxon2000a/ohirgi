@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import "../Reading/reading.css";
+import Notification from './notif'; // Import the Notification component
 
 const Reading = () => {
     const [data, setData] = useState([]);
@@ -9,6 +10,7 @@ const Reading = () => {
     const [showCalculatedData, setShowCalculatedData] = useState(false);
     const [showAllData, setShowAllData] = useState(false);
     const [showMonthlyData, setShowMonthlyData] = useState(false);
+    const [notification, setNotification] = useState(null); // State for notification
 
     useEffect(() => {
         // Fetch data from your new API endpoint
@@ -102,6 +104,8 @@ const Reading = () => {
             .then(() => {
                 // Remove the item from the state
                 setData(data.filter(item => item.id !== id));
+                setNotification("Maxsulot o'chirildi!"); // Show notification
+                setTimeout(() => setNotification(null), 3000); // Hide notification after 3 seconds
             })
             .catch(err => console.log(err));
     };
@@ -137,6 +141,7 @@ const Reading = () => {
                 ))}
             </div>
             <Link to={"/Crud"} className="link"> ← Bosh menyuga qaytish </Link>
+            {notification && <Notification message={notification} onClose={() => setNotification(null)} />} {/* Show notification */}
         </div>
     );
 }

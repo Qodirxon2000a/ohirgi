@@ -1,0 +1,63 @@
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+    width: auto;
+    max-width: 300px; /* Ensure it doesn't stretch too wide */
+}
+
+.notification.fade-in {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.notification.fade-out {
+    opacity: 0;
+    transform: translateY(-20px);
+}
+
+.notification-close-button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    margin-left: 15px;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+    .notification {
+        width: 80%;
+        right: 10%;
+        max-width: none; /* Allow it to use full width within the 80% container */
+    }
+
+    .notification-close-button {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .notification {
+        width: 90%;
+        right: 5%;
+        max-width: none; /* Allow it to use full width within the 90% container */
+        border-radius: 0; /* Remove border-radius for smaller screens */
+    }
+
+    .notification-close-button {
+        font-size: 12px;
+    }
+}
