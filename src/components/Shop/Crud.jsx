@@ -53,8 +53,8 @@ const Crud = () => {
       { name: 'Pepsi 0.5', category: 'Suvlar', price: 7000, avatar: 'https://1119001045.rsc.cdn77.org/wa-data/public/shop/products/86/30/3086/images/2216/Napitok_Gazirovannyy_PEPSI_05_l.650@2x.jpg' },
       { name: 'Pepsi 1', category: 'Suvlar', price: 12000, avatar: 'https://1119001045.rsc.cdn77.org/wa-data/public/shop/products/86/30/3086/images/2216/Napitok_Gazirovannyy_PEPSI_05_l.650@2x.jpg' },
       { name: 'Pepsi 1.5', category: 'Suvlar', price: 15000, avatar: 'https://1119001045.rsc.cdn77.org/wa-data/public/shop/products/86/30/3086/images/2216/Napitok_Gazirovannyy_PEPSI_05_l.650@2x.jpg' },
-      { name: 'Gazlanmagan 0.5', category: 'Suvlar', price: 2000, avatar: 'https://1119001045.rsc.cdn77.org/wa-data/public/shop/products/86/30/3086/images/2216/Napitok_Gazirovannyy_PEPSI_05_l.650@2x.jpg' },
-      { name: 'Gazlanmagan 1', category: 'Suvlar', price: 3000, avatar: 'https://1119001045.rsc.cdn77.org/wa-data/public/shop/products/86/30/3086/images/2216/Napitok_Gazirovannyy_PEPSI_05_l.650@2x.jpg' },
+      { name: 'Gazlanmagan 0.5', category: 'Suvlar', price: 2000, avatar: 'https://images.uzum.uz/cd6ifun0tgqvlm58ms9g/original.jpg' },
+      { name: 'Gazlanmagan 1', category: 'Suvlar', price: 3000, avatar: 'https://images.uzum.uz/cd6ifun0tgqvlm58ms9g/original.jpg' },
     ],
   };
 
