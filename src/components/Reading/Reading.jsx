@@ -139,10 +139,8 @@ const Reading = () => {
             <button onClick={calculateAllData} className="calculate-button">Hammasi</button>
             <button onClick={calculateMonthlyData} className="calculate-button">Oylik Hisobot</button>
             <button onClick={calculateTotalRevenue} className="calculate-button">Umumiy Tushum</button> {/* New button for total revenue */}
-            {showMonthlyData && (
-                <button onClick={exportToExcel} className="export-button">Excelga Eksport qilish</button>
-            )}
-             {totalRevenue > 0 && ( // Display total revenue if greater than 0
+            {/* <button onClick={exportToExcel} className="export-button">Excelga Eksport qilish</button> Always visible export button */}
+            {totalRevenue > 0 && ( // Display total revenue if greater than 0
                 <div className="total-revenue">
                     <h2>Umumiy Tushum: {totalRevenue.toFixed(2)} Som</h2>
                 </div>
@@ -160,7 +158,6 @@ const Reading = () => {
                     ))}
                 </div>
             )}
-           
             <div className="product__grid">
                 {data.map((item) => (
                     <div key={item.id} className="product__info">
