@@ -11,8 +11,8 @@ const Reading = () => {
     const [showMonthlyData, setShowMonthlyData] = useState(false);
 
     useEffect(() => {
-        // Fetch data from your API
-        axios.get('https://66a87a83e40d3aa6ff582ddb.mockapi.io/Fast')
+        // Fetch data from your new API endpoint
+        axios.get('https://61fcfec8f62e220017ce4280.mockapi.io/kiyim-kechak/qishkiKiyimlar')
             .then(res => setData(res.data))
             .catch(err => console.log(err));
     }, []);
@@ -31,7 +31,7 @@ const Reading = () => {
                 };
             }
 
-            acc[key].totalPrice += item.price;
+            acc[key].totalPrice += item.price || 0;
             acc[key].totalSales += 1;
 
             return acc;
@@ -56,7 +56,7 @@ const Reading = () => {
                 };
             }
 
-            acc[key].totalPrice += item.price;
+            acc[key].totalPrice += item.price || 0;
             acc[key].totalSales += 1;
 
             return acc;
@@ -84,7 +84,7 @@ const Reading = () => {
                 };
             }
 
-            acc[key].totalPrice += item.price;
+            acc[key].totalPrice += item.price || 0;
             acc[key].totalSales += 1;
 
             return acc;
@@ -98,7 +98,7 @@ const Reading = () => {
 
     const handleDelete = (id) => {
         // Make API call to delete the item
-        axios.delete(`https://66a87a83e40d3aa6ff582ddb.mockapi.io/Fast/${id}`)
+        axios.delete(`https://61fcfec8f62e220017ce4280.mockapi.io/kiyim-kechak/qishkiKiyimlar/${id}`)
             .then(() => {
                 // Remove the item from the state
                 setData(data.filter(item => item.id !== id));
@@ -130,7 +130,7 @@ const Reading = () => {
                         <img src={item.avatar} alt={item.name} className="product__avatar" />
                         <h2>{item.name}</h2>
                         <p>Kategoriya: {item.category}</p>
-                        <p className="price">Narxi: {item.price.toFixed(2)} Som</p>
+                        <p className="price">Narxi: {item.price ? item.price.toFixed(2) : 'N/A'} Som</p>
                         <p className="date">Sanasi: {new Date(item.dateAdded).toLocaleDateString()}</p>
                         <button onClick={() => handleDelete(item.id)} className="delete-button">O'chirish</button>
                     </div>
