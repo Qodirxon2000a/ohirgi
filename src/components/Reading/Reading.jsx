@@ -1,8 +1,11 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import Modal from 'react-modal';
 import { Link } from 'react-router-dom';
 import "../Reading/reading.css";
 import Notification from './notif';
+
+Modal.setAppElement('#root'); // Set the root element for the modal
 
 const Reading = () => {
     const [data, setData] = useState([]);
@@ -16,6 +19,7 @@ const Reading = () => {
     const [totalRevenue, setTotalRevenue] = useState(0);
     const [latestDailyRevenue, setLatestDailyRevenue] = useState(0);
     const [selectedDate, setSelectedDate] = useState('');
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         axios.get('https://61fcfec8f62e220017ce4280.mockapi.io/kiyim-kechak/qishkiKiyimlar')
@@ -214,13 +218,27 @@ const Reading = () => {
             return acc;
         }, {});
 
+        // Calculate the total revenue for the selected date
+        const totalRevenueForDate = dailyData.reduce((acc, item) => acc + (item.price || 0), 0);
+
         setCalculatedData(Object.values(result));
         setShowDailyRevenue(true);
         setShowCalculatedData(false);
         setShowAllData(false);
         setShowMonthlyData(false);
         setShowMonthlyRevenue(false);
+        setIsModalOpen(true);
+
+        // Set the total revenue in the state
+        setTotalRevenue(totalRevenueForDate);
     };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
+
+    // Sort data by dateAdded in descending order
+    const sortedData = [...data].sort((a, b) => new Date(b.dateAdded) - new Date(a.dateAdded));
 
     return (
         <div className="reading__container">
@@ -260,8 +278,10 @@ const Reading = () => {
                 </div>
             )}
             {showDailyRevenue && (
-                <div className="daily-revenue">
+                <Modal isOpen={isModalOpen} onRequestClose={closeModal} contentLabel="Kunlik Tushum">
                     <h2>Kunlik Tushum</h2>
+                    <button onClick={closeModal} className="close-button">Yopish</button>
+                    <h3>Kunlik Umumiy Tushum: {totalRevenue ? totalRevenue.toFixed(2) : '0.00'} Som</h3>
                     {calculatedData.length > 0 ? (
                         calculatedData.map((item, index) => (
                             <div key={index} className="daily-revenue-item">
@@ -274,10 +294,10 @@ const Reading = () => {
                     ) : (
                         <p>Ma'lumot mavjud emas</p>
                     )}
-                </div>
+                </Modal>
             )}
             <div className="product__grid">
-                {(showDailyRevenue ? calculatedData : data).map((item) => (
+                {sortedData.map((item) => (
                     <div key={item.id} className="product__info">
                         <img src={item.avatar} alt={item.name} className="product__avatar" />
                         <h2>{item.name}</h2>
