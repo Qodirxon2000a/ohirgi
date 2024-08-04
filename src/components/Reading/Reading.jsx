@@ -19,7 +19,10 @@ const Reading = () => {
 
     useEffect(() => {
         axios.get('https://61fcfec8f62e220017ce4280.mockapi.io/kiyim-kechak/qishkiKiyimlar')
-            .then(res => setData(res.data))
+            .then(res => {
+                setData(res.data);
+                setShowDailyRevenue(false); // Reset daily revenue view when data is fetched
+            })
             .catch(err => console.log(err));
     }, []);
 
@@ -191,8 +194,9 @@ const Reading = () => {
 
     const viewDailyRevenue = () => {
         const dailyData = data.filter(item => {
-            const date = new Date(item.dateAdded).toLocaleDateString();
-            return date === new Date(selectedDate).toLocaleDateString();
+            const itemDate = new Date(item.dateAdded).toLocaleDateString();
+            const selectedItemDate = new Date(selectedDate).toLocaleDateString();
+            return itemDate === selectedItemDate;
         });
 
         const result = dailyData.reduce((acc, item) => {
@@ -229,7 +233,7 @@ const Reading = () => {
             <button onClick={calculateAllData} className="calculate-button">Hammasi</button>
             <button onClick={calculateMonthlyData} className="calculate-button">Oylik Hisobot</button>
             <button onClick={calculateMonthlyRevenue} className="calculate-button">Oylik Tushum</button>
-            <button onClick={calculateTotalRevenue} className="calculate-button">Kunlik Tushum</button>
+            <button onClick={calculateTotalRevenue} className="calculate-button">Umumiy Tushum</button>
             <div>
                 <br /><br />
                 <label>Kun:
@@ -262,7 +266,7 @@ const Reading = () => {
                         calculatedData.map((item, index) => (
                             <div key={index} className="daily-revenue-item">
                                 <h3>Mahsulot: {item.productName}</h3>
-                                <p>Narxi: {item.price ? item.price.toFixed(2) : '0.00'} Som</p>
+                                <p>Narxi: {item.price ? item.price.toFixed(2) : ''} Som</p>
                                 <p>Soni: {item.quantity || 0}</p>
                                 <p>Umumiy Tushum: {(item.price && item.quantity) ? (item.price * item.quantity).toFixed(2) : '0.00'} Som</p>
                             </div>
@@ -272,19 +276,8 @@ const Reading = () => {
                     )}
                 </div>
             )}
-            {showMonthlyRevenue && (
-                <div className="monthly-revenue">
-                    <h2>Oylik Tushum</h2>
-                    {calculatedData.map((item, index) => (
-                        <div key={index} className="monthly-revenue-item">
-                            <h3>Oy: {item.month} {item.year}</h3>
-                            <p>Umumiy Tushum: {item.totalRevenue ? item.totalRevenue.toFixed(2) : '0.00'} Som</p>
-                        </div>
-                    ))}
-                </div>
-            )}
             <div className="product__grid">
-                {data.map((item) => (
+                {(showDailyRevenue ? calculatedData : data).map((item) => (
                     <div key={item.id} className="product__info">
                         <img src={item.avatar} alt={item.name} className="product__avatar" />
                         <h2>{item.name}</h2>
