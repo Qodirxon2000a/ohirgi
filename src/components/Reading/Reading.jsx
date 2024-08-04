@@ -42,6 +42,7 @@ const Reading = () => {
                     category: item.category,
                     totalPrice: 0,
                     totalSales: 0,
+                    avatar: item.avatar,
                 };
             }
 
@@ -137,10 +138,17 @@ const Reading = () => {
                     month,
                     year,
                     totalRevenue: 0,
+                    items: [],
                 };
             }
 
             acc[key].totalRevenue += item.price || 0;
+            acc[key].items.push({
+                name: item.name,
+                category: item.category,
+                price: item.price || 0,
+                avatar: item.avatar,
+            });
 
             return acc;
         }, {});
@@ -164,6 +172,7 @@ const Reading = () => {
                         month,
                         year,
                         totalRevenue: 0,
+                        items: [],
                     };
                 }
             });
@@ -250,8 +259,8 @@ const Reading = () => {
             <button onClick={calculateData} className="calculate-button">Mahsulot bo'yicha</button>
             <button onClick={calculateAllData} className="calculate-button">Hammasi</button>
             <button onClick={calculateMonthlyData} className="calculate-button">Oylik Hisobot</button>
-            <button onClick={calculateMonthlyRevenue} className="calculate-button">Oylik Tushum</button>
             <button onClick={calculateTotalRevenue} className="calculate-button">Umumiy Tushum</button>
+            <button onClick={calculateMonthlyRevenue} className="calculate-button">Yopish</button>
             <div>
                 <br /><br />
                 <label>Kun:
@@ -273,6 +282,18 @@ const Reading = () => {
                             <p>Kategoriya: {item.category || 'N/A'}</p>
                             <p>Hammasi: {item.totalSales || 0}</p>
                             <p>Umumiy Pul: {item.totalPrice ? item.totalPrice.toFixed(2) : '0.00'} Som</p>
+                            {showMonthlyData && item.items && (
+                                <div className="monthly-items">
+                                    {item.items.map((subItem, subIndex) => (
+                                        <div key={subIndex} className="monthly-item">
+                                            <img src={subItem.avatar} alt={subItem.name} className="product__avatar" />
+                                            <h4>{subItem.name}</h4>
+                                            <p>Kategoriya: {subItem.category}</p>
+                                            <p>Narxi: {subItem.price ? subItem.price.toFixed(2) : '0.00'} Som</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     ))}
                 </div>
